@@ -1,26 +1,29 @@
 #!/usr/bin/python3
-"""
-    This module contains isWinner function
-    which implements prime game algorithm
-"""
-
+""" Module for solving prime game question """
 
 def isWinner(x, nums):
-    """Returns winner of the game"""
-
-    is_prime = 0
-    is_not_Prime = 0
-
-    if nums and x > 0 and nums != []:
-        for num in nums:
-            if (num > 0):
-                if(num % 2 == 0):
-                    is_prime += 1
-                else:
-                    is_not_Prime += 1
-        if is_prime >= is_not_Prime:
-            return "Maria"
-        else:
-            return "Ben"
-    else:
+    """function that checks for the winner"""
+    if not nums or x < 1:
         return None
+    max_num = max(nums)
+
+    my_filter = [True for _ in range(max(max_num + 1, 2))]
+    for i in range(2, int(pow(max_num, 0.5)) + 1):
+        if not my_filter[i]:
+            continue
+        for j in range(i * i, max_num + 1, i):
+            my_filter[j] = False
+    my_filter[0] = my_filter[1] = False
+    y = 0
+    for i in range(len(my_filter)):
+        if my_filter[i]:
+            y += 1
+        my_filter[i] = y
+    player1 = 0
+    for x in nums:
+        player1 += my_filter[x] % 2 == 1
+    if player1 * 2 == len(nums):
+        return None
+    if player1 * 2 > len(nums):
+        return "Maria"
+    return "Ben"
